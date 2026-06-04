@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { SliderInput } from './SliderInput';
 import { calculateEMI, generateAmortizationSchedule } from '@/calculators/emi';
 import { EmiPieChart } from '@/charts/EmiPieChart';
-import { AmortizationLineChart } from '@/charts/AmortizationLineChart';
+
 import { formatCurrency } from '@/utils/formatters';
 import { useStore } from '@/store/useStore';
 
@@ -52,27 +52,7 @@ export function EmiCalculator({ defaultPrincipal = 1000000, defaultRate = 8.5, d
         
         {/* Controls */}
         <div className="bg-card p-6 rounded-2xl border border-border shadow-sm">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-card-foreground">Loan Details</h2>
-            <button 
-              onClick={() => {
-                const { addCalculation } = useStore.getState();
-                addCalculation({
-                  type: 'EMI',
-                  principal,
-                  rate,
-                  tenure,
-                  emi: results.emi,
-                  totalInterest: results.totalInterest,
-                  totalPayment: results.totalPayment
-                });
-                alert('Calculation Saved to Dashboard!');
-              }}
-              className="text-sm px-3 py-1 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 flex items-center gap-1"
-            >
-              <span>Save</span>
-            </button>
-          </div>
+          <h2 className="text-xl font-bold text-card-foreground mb-6">Loan Details</h2>
           
           <SliderInput
             label="Loan Amount"
@@ -135,21 +115,14 @@ export function EmiCalculator({ defaultPrincipal = 1000000, defaultRate = 8.5, d
                 <AnimatedNumber value={results.totalPayment} currencyFormatter currency={currency} />
               </h4>
             </div>
+            <div className="mt-8">
+              <h3 className="text-lg font-bold mb-4">Breakdown</h3>
+              <EmiPieChart principal={principal} totalInterest={results.totalInterest} />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Visualizations */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="bg-card p-6 rounded-2xl border border-border shadow-sm lg:col-span-1">
-          <h3 className="text-lg font-bold mb-4">Breakdown</h3>
-          <EmiPieChart principal={principal} totalInterest={results.totalInterest} />
-        </div>
-        <div className="bg-card p-6 rounded-2xl border border-border shadow-sm lg:col-span-2">
-          <h3 className="text-lg font-bold mb-4">Amortization Schedule</h3>
-          <AmortizationLineChart schedule={schedule} />
-        </div>
-      </div>
       
       {/* Amortization Table */}
       <div id="amortization-table" className="bg-card p-6 rounded-2xl border border-border shadow-sm overflow-x-auto">

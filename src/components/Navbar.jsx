@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ThemeToggle } from './ThemeToggle';
-import { Calculator } from 'lucide-react';
+import { Calculator, Menu, X } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -11,6 +12,7 @@ export function cn(...inputs) {
 
 export function Navbar() {
   const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const links = [
     { name: 'EMI Calculator', path: '/' },
@@ -19,7 +21,6 @@ export function Navbar() {
     { name: 'Car Loan', path: '/car-loan-emi-calculator' },
     { name: 'SIP', path: '/sip-calculator' },
     { name: 'Compare Loans', path: '/compare-loans' },
-    { name: 'Dashboard', path: '/dashboard' },
   ];
 
   return (
@@ -30,7 +31,7 @@ export function Navbar() {
           <span className="font-bold text-xl text-primary tracking-tight">FinCal</span>
         </Link>
         
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden lg:flex items-center gap-6">
           {links.map((link) => (
             <Link
               key={link.path}
@@ -46,10 +47,43 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-4">
-          {/* Currency Selector can go here */}
           <ThemeToggle />
+          <button
+            className="lg:hidden text-foreground hover:text-primary transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle Menu"
+          >
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
       </div>
+
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="lg:hidden border-b border-border overflow-hidden bg-background"
+          >
+            <nav className="container mx-auto px-4 py-4 flex flex-col gap-4">
+              {links.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={cn(
+                    "block text-sm font-medium transition-colors hover:text-primary",
+                    location.pathname === link.path ? "text-primary" : "text-muted-foreground"
+                  )}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

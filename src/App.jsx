@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import { useStore } from '@/store/useStore'
 import { Navbar } from '@/components/Navbar'
 import { CalculatorPage } from '@/pages/CalculatorPage'
-import { Dashboard } from '@/pages/Dashboard'
+
 import { CompareLoans } from '@/pages/CompareLoans'
 import { SipCalculator } from '@/pages/SipCalculator'
 
@@ -54,7 +54,6 @@ function App() {
           } />
           <Route path="/sip-calculator" element={<SipCalculator />} />
           <Route path="/compare-loans" element={<CompareLoans />} />
-          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </main>
 
